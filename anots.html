@@ -35,3 +35,65 @@
 
   </body>
 </html>
+
+<!-- PHP LOGIN MD5 -->
+<?php
+    include("conexao.php");
+    $email = $_POST["email"];
+    $set_senha = $_POST["senha"];
+
+    $comando = $pdo-> prepare("SELECT id_usuario, senha FROM usuario WHERE email = :email");
+    $comando->bindValue(":email",$email);
+    $comando->execute();
+
+    if($comando->rowCount() == 1)
+    {
+        $resultado = $comando->fetch();
+
+        if($resultado['senha'] == MD5($set_senha)){
+
+            session_start();
+            $_SESSION['id_usuario'] = $resultado['id_usuario'];
+            $_SESSION['loggedin'] = true; 
+
+            header("location: Untitled-1.html");
+        }else{
+            echo("Email ou Senha incorreto!");
+        }
+
+    }else{
+        echo("Email ou Senha incorreto!");
+    }
+
+    unset($comando);
+    unset($pdo);
+
+?>
+
+<!------------------------------------------->
+
+<div class="my-3 card shadow-sm">
+  <?php include_once "conexao.php";
+      if(!isset($_SESSION['id']) and (!isset($_SESSION['nome']))){
+          header("location:login.html");
+      }else{
+          echo "<h4>Informações do usuário</h4> <h6>Nome: </h6>" . $_SESSION['nome']; 
+       }
+  ?>
+</div>
+</div>
+</main>
+
+<footer class="fixed-bottom border-top text-muted bg-light">
+<div class="coontainer">
+<div class="row py-3">
+  <div class="col-12 col-md-4 text-center text-md-left">
+      &copy; 2022 - WLJ Sports
+  </div>
+  <div class="col-12 col-md-4 text-center">
+      <a href="#" class="text-decoration-none text dark">Politica de privacidade</a>
+  </div>
+  <div class="col-12 col-md-4 text-center text-md-right">
+      <a href="#" class="text-decoration-none text dark">administrar</a>
+  </div>
+</div>
