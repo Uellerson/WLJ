@@ -1,27 +1,37 @@
 <?php
 session_start();
 include("conexao.php");
-// Verifique se o usuário está logado, se não, redirecione-o para uma página de login
-if(!isset($_SESSION['id']) and (!isset($_SESSION['nome']))){
-    header("location:login.html");
-  } 
 ?>
-
 
 <!doctype html>
 <html lang="pt-br">
 
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  
 
+  <title>Hello, world!</title>
 
-    <title></title>
+  <style>
+.zoom  {
+  max-width: 100%;
+  -moz-transition: all 0.2s;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+ 
+}
+.zoom:hover  {
+  -moz-transform: scale(1.02);
+  -webkit-transform: scale(1.02);
+  transform: scale(1.02);
+ 
+}</style>
 </head>
 
 <body>
@@ -239,198 +249,190 @@ if(!isset($_SESSION['id']) and (!isset($_SESSION['nome']))){
                   </svg> </a>
           </li>
     </ul>
+  
+  
+  <header class="container ">     
 
-    <main>
+  </header>
+
+  <main>
         <nav aria-label="breadcrumb">
-            <ol class="m-3 breadcrumb">
+            <ol class="mx-5 mt-2 breadcrumb">
                 <li class="breadcrumb-item"><a href="Untitled-1.php">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Endereço</li>
+                <li class="breadcrumb-item active" aria-current="page">Categoria</li>
             </ol>
         </nav>
 
-        <div class="container text-center d-flex justify-content-center">
-            <div class="card mx-2 shadow col-5 my-3">
-                <div class="card-header">
-                    <h4>Informações endereco:</h4>
-                </div>
-                <div class="card-body">
-
-
-                    <?php
-                        $id_usuario = $_SESSION['id_usuario'];
-
-                        $query_usuario = "SELECT * FROM endereco WHERE id_usuario = :id_usuario  LIMIT 1";  
-                        $result_usuario = $pdo->prepare($query_usuario);
-                        $result_usuario->bindParam(':id_usuario', $_SESSION['id_usuario']);
-
-                        $result_usuario->execute();
-
-                        if(($result_usuario) AND ($result_usuario->rowCount() != 0 )){
-                            $row_usuario = $result_usuario->fetch(PDO::FETCH_ASSOC);
-                            
-                            $_SESSION['cep'] = $row_usuario['cep'];
-                            $_SESSION['rua'] = $row_usuario['rua'];
-                            $_SESSION['numero'] = $row_usuario['numero'];
-                            $_SESSION['bairro'] = $row_usuario['bairro'];
-                            $_SESSION['cidade'] = $row_usuario['cidade'];
-                            $_SESSION['estado'] = $row_usuario['estado'];
-                        }
-                            ?>
-
-
-                    <div class="d-flex justify-content-between">
-                        <h5>cep:</h5>
-                        <h6>
-                            <?php echo $_SESSION["cep"]; ?>
-                        </h6>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Rua:</h5>
-                        <h6>
-                            <?php echo $_SESSION["rua"]; ?>
-                        </h6>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Número:</h5>
-                        <h6>
-                            <?php echo $_SESSION["numero"]; ?>
-                        </h6>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Bairro:</h5>
-                        <h6>
-                            <?php echo $_SESSION["bairro"]; ?>
-                        </h6>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Cidade:</h5>
-                        <h6>
-                            <?php echo $_SESSION["cidade"]; ?>
-                        </h6>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Estado:</h5>
-                        <h6>
-                            <?php echo $_SESSION["estado"]; ?>
-                        </h6>
-                    </div>
-
-                </div>
-                <div class="card-footer">
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        Alterar
+    <div class="container-fluid">
+        <div class="row m-2">
+            <div class="card col mx-3"> 
+                <h5 class=" text-center fw-bold mb-5 mt-2 pt-1">Filtrar produtos</h5>
+                <input type="search" id="marca" name="marca" class="d-none">
+                <input type="search" id="cat" name="cat" class="d-none">
+                <div class="d-flex ">
+                    <button type="button" class=" col btn btn-outline-primary" value="adidas" id="adidas" onclick="carAdidas()">
+                        <img src="img/adidas-logo-png-adidas-logo-png-adidas-3504.png" width="50px"> 
+                    </button>
+                    <button type="button" class="ms-1 col btn btn-outline-primary" value="nike" id="nike" onclick="carNike()">
+                        <img src="img/logo-nike.png" width="50px"> 
                     </button>
                 </div>
-            </div>
-            <form action="editar_endereco.php" method="POST">
-                <div class="modal fade" data-bs-backdrop="static" id="exampleModal" tabindex="-1"
-                    aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Informações endereço</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">cep: </label>
-                                    <input type="text" name="cep" class="form-control col"
-                                        value="<?php echo $_SESSION['cep']; ?>">
-                                </div>
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">Rua: </label>
-                                    <input type="text" name="rua" class="form-control col"
-                                        value="<?php echo $_SESSION['rua']; ?>" >
-                                </div>
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">Número: </label>
-                                    <input type="text" name="numero" class="form-control col"
-                                        value="<?php echo $_SESSION['numero']; ?>" >
-                                </div>
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">Bairro: </label>
-                                    <input type="text" name="bairro" class="form-control col"
-                                        value="<?php echo $_SESSION['bairro']; ?>" >
-                                </div>
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">Cidade: </label>
-                                    <input type="text" name="cidade" class="form-control col"
-                                        value="<?php echo $_SESSION['cidade']; ?>" >
-                                </div>
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">Estado: </label>
-                                    <input type="text" name="estado" class="form-control col"
-                                        value="<?php echo $_SESSION['estado']; ?>" >
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <input type="submit" class="btn btn-primary" value="Salvar alterações">
-                            </div>
-                        </div>
-                    </div>
+                <div class="d-flex mt-3">
+                    <button type="button" class=" col btn btn-outline-primary" value="campo" id="campo" onclick="carCampo()">
+                        Campo
+                    </button>
+                    <button type="button" class="ms-1 col btn btn-outline-primary" value="futsal" id="futsal" onclick="carFutsal()">
+                        Futsal
+                    </button>
+                    <button type="button" class="ms-1 col btn btn-outline-primary" value="society" id="society" onclick="carSociety()">
+                        Society
+                    </button>
                 </div>
-        </div>
-        </form>
-        </div>
-
-    <footer class=" border-top text-muted bg-light">
-        <div class="coontainer">
-        <div class="row py-3">
-            <div class="col-12 col-md-4 text-center text-md-left">
-            &copy; 2022 - WLJ Sports
+                <button onclick="searchFiltro()" class="btn my-2" style=" background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);">
+                    Filtrar
+                </button>
             </div>
-            <div class="col-12 col-md-4 text-center">
-            <a href="#" class="text-decoration-none text dark">Politica de privacidade</a>
-            </div> 
-            <div class="col-12 col-md-4 text-center text-md-right">
+            <div class=" col-9">
+                        <div class="row">
             <?php 
-                if(!isset($_SESSION['id']) and (!isset($_SESSION['nome']))){
-                echo '<a href="#" class="text-decoration-none text dark">Termos de uso</a>';
-                
-                }else{
-                if ($_SESSION['adm_usuario'] != 1){
-                echo '<a href="#" class="text-decoration-none text dark">Termos de uso</a>';
-                
-                }else{
-                echo '<a href="tela_adm.php" class="text-decoration-none text dark">administrador</a>';
+              ////Barra de Pesquisa////
+              if(!empty($_GET['search']))
+              {
+                  $data = $_GET['search'];
+                  $comando = $pdo->prepare("SELECT * FROM produtos WHERE nome_produto LIKE '%$data%' or categoria LIKE '%$data%' or nome_produto or categoria LIKE '%$data%'");
 
-                }
-                }
+                  $comando->execute();
+
+                  if ($comando->rowCount() >= 1) {
+                      $listaItens = $comando->fetchAll();
+                      
+                  }
+              }else{
+                include("listar_produtos.php");
+              }
+                if (!empty($listaItens)) {
+                    foreach($listaItens as $linha) { 
             ?>
+        
+        <div class="p-3 col-xl-3 col-lg-4 col-md-4 col-sm-6 d-flex align-items-stretche">
+        
+          <div class=" zoom card shadow text-center bg-light">
+            <a href="inserir_favoritos.php?id_produto=<?php echo $linha['id_produto'];?>" class="position-absolute right-0 p-2 text-danger">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="" class="bi bi-heart" viewBox="0 0 16 16">
+                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+              </svg>
+            </a>
+            <a style="text-decoration:none;" href="Produto.php?id_produto=<?php echo $linha['id_produto'];?>">
+            <?php echo '<div class=""><img height="100%" width="100%"  class="border border-white card-img-top" src="'.$linha['imagem'].'"></div>';?>
+            
+            <div class="text-start card-header">
+            <h4 class="text-muted"><?php echo $linha['nome_produto'];?></h4>
+            <h7 class="text-muted"><?php echo $linha['categoria'];?></h7>
+            <h6 class="text-success"> FRETE GRATIS</h6>
+            </a> 
+            <h4 class="card-title"><?php echo "R$". $linha['preco'].",00";?></h4>
+            </div>
+          </div> 
+                           
+        </div>
+        <?php
+                    }
+                }
+            ?> 
+            </div>
             </div>
         </div>
+    </div>
+    
+    
+  </main>
+
+  <footer class=" border-top text-muted bg-light">
+    <div class="coontainer">
+      <div class="row py-3">
+        <div class="col-12 col-md-4 text-center text-md-left">
+          &copy; 2022 - WLJ Sports
         </div>
+        <div class="col-12 col-md-4 text-center">
+          <a href="#" class="text-decoration-none text dark">Politica de privacidade</a>
+        </div> 
+        <div class="col-12 col-md-4 text-center text-md-right">
+          <?php 
+            if(!isset($_SESSION['id']) and (!isset($_SESSION['nome']))){
+              echo '<a href="#" class="text-decoration-none text dark">Termos de uso</a>';
+              
+            }else{
+              if ($_SESSION['adm_usuario'] != 1){
+              echo '<a href="#" class="text-decoration-none text dark">Termos de uso</a>';
+              
+              }else{
+              echo '<a href="tela_adm.php" class="text-decoration-none text dark">administrador</a>';
 
-    </footer>
+              }
+            }
+          ?>
+        </div>
+      </div>
+    </div>
 
+  </footer>
+  
+  
 
-        <!-- Optional JavaScript -->
-        <!-- Popper.js first, then Bootstrap JS -->
+  <!-- Optional JavaScript -->
+  <!-- Popper.js first, then Bootstrap JS -->
+ 
 
+ <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+        </script>
 
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-            integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
-            </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+        crossorigin="anonymous"></script>
+    <script>
+        function carAdidas(){
+            document.getElementById("marca").value = document.getElementById("adidas").value;
+        }
+        function carNike(){
+            document.getElementById("marca").value = document.getElementById("nike").value;
+        }
+        function carCampo(){
+            document.getElementById("cat").value = document.getElementById("campo").value;
+        }
+        function carFutsal(){
+            document.getElementById("cat").value = document.getElementById("futsal").value;
+        }
+        function carSociety(){
+            document.getElementById("cat").value = document.getElementById("society").value;
+        }
+    </script>
+    <script>
+        
+    </script>
+    <script>
+        var searchM = document.getElementById('marca');
+        var searchM2 = document.getElementById('cat');
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
-            integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
-            </script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-            crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
-            integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
-            crossorigin="anonymous"></script>
-            <script>
+        searchM.addEventListener("keydown", function(event){
+            if (event.key === "Enter")
+            {
+                searchFiltro();
+            }
+        });
+
+        function searchFiltro()
+        {
+            window.location = 'categoria.php?search='+searchM.value+""+searchM2.value;
+        }
+    </script>
+    <script>
             var search = document.getElementById('pesquisar');
     
             search.addEventListener("keydown", function(event){
@@ -445,7 +447,7 @@ if(!isset($_SESSION['id']) and (!isset($_SESSION['nome']))){
                 window.location = 'categoria.php?search='+search.value;
             }
         </script>
-
+    
 </body>
-
+<script src="jaava.js"></script>
 </html>

@@ -1,27 +1,25 @@
 <?php
 session_start();
 include("conexao.php");
-// Verifique se o usuário está logado, se não, redirecione-o para uma página de login
-if(!isset($_SESSION['id']) and (!isset($_SESSION['nome']))){
-    header("location:login.html");
-  } 
+if($_SESSION['adm_usuario']  !=1){
+    header("location: untitled-1.php");
+    exit;
+}
 ?>
-
-
 <!doctype html>
 <html lang="pt-br">
 
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  
 
-
-    <title></title>
+  <title>Hello, world!</title>
 </head>
 
 <body>
@@ -240,212 +238,93 @@ if(!isset($_SESSION['id']) and (!isset($_SESSION['nome']))){
           </li>
     </ul>
 
-    <main>
-        <nav aria-label="breadcrumb">
-            <ol class="m-3 breadcrumb">
-                <li class="breadcrumb-item"><a href="Untitled-1.php">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Endereço</li>
-            </ol>
-        </nav>
+  <main>
 
-        <div class="container text-center d-flex justify-content-center">
-            <div class="card mx-2 shadow col-5 my-3">
-                <div class="card-header">
-                    <h4>Informações endereco:</h4>
-                </div>
-                <div class="card-body">
+    <nav aria-label="breadcrumb">
+        <ol class="mx-5 mt-2 breadcrumb">
+            <li class="breadcrumb-item"><a href="Untitled-1.php">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Administrador</li>
+        </ol>
+    </nav>
 
 
-                    <?php
-                        $id_usuario = $_SESSION['id_usuario'];
+  
+    <div class="container text-center">
+        <h3 class="text-center">BEM VINDO ADM!</h3>
 
-                        $query_usuario = "SELECT * FROM endereco WHERE id_usuario = :id_usuario  LIMIT 1";  
-                        $result_usuario = $pdo->prepare($query_usuario);
-                        $result_usuario->bindParam(':id_usuario', $_SESSION['id_usuario']);
+        <a href="adm_usuarios.php"> 
+            <button type="button" class="btn btn-primary">Lista usuarios</button>
+        </a>
 
-                        $result_usuario->execute();
+        <a href="adm_enderecos.php"> 
+            <button type="button" class="btn btn-primary">Lista endereços</button>
+        </a>
 
-                        if(($result_usuario) AND ($result_usuario->rowCount() != 0 )){
-                            $row_usuario = $result_usuario->fetch(PDO::FETCH_ASSOC);
-                            
-                            $_SESSION['cep'] = $row_usuario['cep'];
-                            $_SESSION['rua'] = $row_usuario['rua'];
-                            $_SESSION['numero'] = $row_usuario['numero'];
-                            $_SESSION['bairro'] = $row_usuario['bairro'];
-                            $_SESSION['cidade'] = $row_usuario['cidade'];
-                            $_SESSION['estado'] = $row_usuario['estado'];
-                        }
-                            ?>
-
-
-                    <div class="d-flex justify-content-between">
-                        <h5>cep:</h5>
-                        <h6>
-                            <?php echo $_SESSION["cep"]; ?>
-                        </h6>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Rua:</h5>
-                        <h6>
-                            <?php echo $_SESSION["rua"]; ?>
-                        </h6>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Número:</h5>
-                        <h6>
-                            <?php echo $_SESSION["numero"]; ?>
-                        </h6>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Bairro:</h5>
-                        <h6>
-                            <?php echo $_SESSION["bairro"]; ?>
-                        </h6>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Cidade:</h5>
-                        <h6>
-                            <?php echo $_SESSION["cidade"]; ?>
-                        </h6>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Estado:</h5>
-                        <h6>
-                            <?php echo $_SESSION["estado"]; ?>
-                        </h6>
-                    </div>
-
-                </div>
-                <div class="card-footer">
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        Alterar
-                    </button>
-                </div>
-            </div>
-            <form action="editar_endereco.php" method="POST">
-                <div class="modal fade" data-bs-backdrop="static" id="exampleModal" tabindex="-1"
-                    aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Informações endereço</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">cep: </label>
-                                    <input type="text" name="cep" class="form-control col"
-                                        value="<?php echo $_SESSION['cep']; ?>">
-                                </div>
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">Rua: </label>
-                                    <input type="text" name="rua" class="form-control col"
-                                        value="<?php echo $_SESSION['rua']; ?>" >
-                                </div>
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">Número: </label>
-                                    <input type="text" name="numero" class="form-control col"
-                                        value="<?php echo $_SESSION['numero']; ?>" >
-                                </div>
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">Bairro: </label>
-                                    <input type="text" name="bairro" class="form-control col"
-                                        value="<?php echo $_SESSION['bairro']; ?>" >
-                                </div>
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">Cidade: </label>
-                                    <input type="text" name="cidade" class="form-control col"
-                                        value="<?php echo $_SESSION['cidade']; ?>" >
-                                </div>
-                                <div class="p-2 d-flex justify-content-between">
-                                    <label class="fs-5 mx-3 ">Estado: </label>
-                                    <input type="text" name="estado" class="form-control col"
-                                        value="<?php echo $_SESSION['estado']; ?>" >
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <input type="submit" class="btn btn-primary" value="Salvar alterações">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <a href="adm_cartoes.php"> 
+            <button type="button" class="btn btn-primary">Lista cartões</button>
+        </a>
+        <div>
+            <a href="cadastro_produtos.html"> 
+                <button type="button" class="mt-2 btn btn-primary">Inserir produtos</button>
+            </a>   
+            <a href="adm_produtos.php"> 
+                <button type="button" class="mt-2 btn btn-primary">Listar produtos</button>
+            </a>      
         </div>
-        </form>
-        </div>
-
-    <footer class=" border-top text-muted bg-light">
-        <div class="coontainer">
-        <div class="row py-3">
-            <div class="col-12 col-md-4 text-center text-md-left">
-            &copy; 2022 - WLJ Sports
-            </div>
-            <div class="col-12 col-md-4 text-center">
-            <a href="#" class="text-decoration-none text dark">Politica de privacidade</a>
-            </div> 
-            <div class="col-12 col-md-4 text-center text-md-right">
-            <?php 
-                if(!isset($_SESSION['id']) and (!isset($_SESSION['nome']))){
-                echo '<a href="#" class="text-decoration-none text dark">Termos de uso</a>';
-                
-                }else{
-                if ($_SESSION['adm_usuario'] != 1){
-                echo '<a href="#" class="text-decoration-none text dark">Termos de uso</a>';
-                
-                }else{
-                echo '<a href="tela_adm.php" class="text-decoration-none text dark">administrador</a>';
-
-                }
-                }
-            ?>
-            </div>
-        </div>
-        </div>
-
-    </footer>
-
-
-        <!-- Optional JavaScript -->
-        <!-- Popper.js first, then Bootstrap JS -->
-
-
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-            integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
-            </script>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
-            integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
-            </script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-            crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
-            integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
-            crossorigin="anonymous"></script>
-            <script>
-            var search = document.getElementById('pesquisar');
+    </div>
     
-            search.addEventListener("keydown", function(event){
-                if (event.key === "Enter")
-                {
-                    searchData();
-                }
-            });
-    
-            function searchData()
-            {
-                window.location = 'categoria.php?search='+search.value;
-            }
+  </main>
+
+  <footer class="fixed-bottom border-top text-muted bg-light">
+    <div class="coontainer">
+      <div class="row py-3">
+        <div class="col-12 col-md-4 text-center text-md-left">
+          &copy; 2022 - WLJ Sports
+        </div>
+        <div class="col-12 col-md-4 text-center">
+          <a href="#" class="text-decoration-none text dark">Politica de privacidade</a>
+        </div> 
+        <div class="col-12 col-md-4 text-center text-md-right">
+          <a href="#" class="text-decoration-none text dark">administrar</a>
+        </div>
+      </div>
+    </div>
+
+  </footer>
+  
+
+  <!-- Optional JavaScript -->
+  <!-- Popper.js first, then Bootstrap JS -->
+ 
+
+ <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
         </script>
 
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+        crossorigin="anonymous"></script>
+        <script>
+        var search = document.getElementById('pesquisar');
 
+        search.addEventListener("keydown", function(event){
+            if (event.key === "Enter")
+            {
+                searchData();
+            }
+        });
+
+        function searchData()
+        {
+            window.location = 'categoria.php?search='+search.value;
+        }
+    </script>
+    
+</body>
 </html>
